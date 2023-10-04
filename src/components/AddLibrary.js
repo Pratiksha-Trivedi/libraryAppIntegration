@@ -5,7 +5,7 @@ import { addLibrary } from '../slices/librarySlice';
 
 const AddLibrary = () => {
   const [name, setName] = useState('');
-  const [ownerName, setOwnerName] = useState(''); // Add ownerName state
+  const [ownerName, setOwnerName] = useState(''); 
 
   const dispatch = useDispatch();
 
@@ -14,7 +14,7 @@ const AddLibrary = () => {
       console.log(name, ownerName)
       const response = await axios.post('http://localhost:8080/library', {
         name: name,
-        ownerName: ownerName, // Include ownerName in the request payload
+        ownerName: ownerName, 
       });
       dispatch(addLibrary(response.data));
     } catch (error) {

@@ -3,25 +3,17 @@ import { Provider } from 'react-redux';
 import store from './store';
 import AddLibrary from './components/AddLibrary';
 import LibraryList from './components/LibraryList';
+import BookList from './components/BookList';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import LibraryUpdateForm from './components/LibraryUpdateForm';
 
+import AddBook from './components/AddBook';
 function App() {
   return (
     <Provider store={store}>
      
       <Router>
         <div className="App">
-          {/* <nav>
-            <ul>
-              <li>
-                <Link to="/add" class="btn btn-primary">Add Library</Link>
-              </li>
-              <li>
-                <Link to="/list" class="btn btn-primary mt-2">Library List</Link>
-              </li>
-            </ul>
-          </nav> */}
+      
 <nav className="navbar navbar-expand-lg navbar-dark bg-success">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Navbar</a>
@@ -44,7 +36,10 @@ function App() {
           <Routes>
             <Route path="/add" element={<AddLibrary />} />
             <Route path="/list" element={<LibraryList />} />
-            
+            <Route path="/add-book" element={<AddBook />} />
+            <Route path="/books/:libraryId" element={<BookList/>} />
+           
+
           </Routes>
         </div>
       </Router>

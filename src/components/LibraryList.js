@@ -4,6 +4,7 @@ import { setLibraries, deleteLibrary, updateLibrary } from '../slices/librarySli
 import '../styles/styles.css';
 import axios from 'axios';
 import LibraryUpdateForm from './LibraryUpdateForm';
+import { Link } from 'react-router-dom';
 
 const LibraryList = () => {
   const dispatch = useDispatch();
@@ -64,7 +65,10 @@ const LibraryList = () => {
               <td>{library.ownerName}</td>
               <td>
                
-              <button onClick>Add Books</button>
+              <button>
+              <Link to={`/books/${library.id}`}>Show Books</Link>
+             
+  </button>
                 
                   <button onClick={() => handleUpdateClick(library)}>Update</button>
                 

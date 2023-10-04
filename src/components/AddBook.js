@@ -1,40 +1,36 @@
+// AddBook.js
+
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addBook } from '../slices/bookSlice';
-import '../styles/styles.css'; 
+
 const AddBook = () => {
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [author, setAuthor] = useState('');
+  const [formData, setFormData] = useState({ title: '', author: '' });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleAddBook = () => {
-    dispatch(addBook({ name, author }));
+    dispatch(addBook(formData));
+    setFormData({ title: '', author: '' }); // Reset form after adding book
   };
 
   return (
     <div>
       <h2>Add Book</h2>
-      <div className="form-group">
-        <label>Name:</label>
-        <input
-          type="text"
-          className="form-input"
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
+      <div>
+        <label>Title:</label>
+        <input type="text" name="title" value={formData.title} onChange={handleInputChange} />
       </div>
-      <div className="form-group">
+      <div>
         <label>Author:</label>
-        <input
-          type="text"
-          className="form-input"
-          value={author}
-          onChange={e => setAuthor(e.target.value)}
-        />
+        <input type="text" name="author" value={formData.author} onChange={handleInputChange} />
       </div>
-      <button className="button" onClick={handleAddBook}>Add Book</button>
+      <button onClick={handleAddBook}>Add Book</button>
     </div>
   );
-}
+};
 
 export default AddBook;
