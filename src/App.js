@@ -1,6 +1,5 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import store from './store';
+
 import AddLibrary from './components/AddLibrary';
 import LibraryList from './components/LibraryList';
 import BookList from './components/BookList';
@@ -9,13 +8,13 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import AddBook from './components/AddBook';
 function App() {
   return (
-    <Provider store={store}>
-     
+   
       <Router>
         <div className="App">
       
-<nav className="navbar navbar-expand-lg navbar-dark bg-success">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-success">
   <div class="container-fluid">
+
     <a class="navbar-brand" href="#">Navbar</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -38,13 +37,13 @@ function App() {
             <Route path="/list" element={<LibraryList />} />
             <Route path="/add-book" element={<AddBook />} />
             <Route path="/books/:libraryId" element={<BookList/>} />
-           
+            <Route path="/addBook/:libraryId" element={<AddBook/>}/>
 
           </Routes>
         </div>
       </Router>
       
-    </Provider>
+
   );
 }
 

@@ -8,7 +8,9 @@ const bookSlice = createSlice({
       return action.payload;
     },
     addBook: (state, action) => {
+      console.log('ssssssssssssssss',action.payload);
       state.push(action.payload);
+      return state;
     },
     updateBook: (state, action) => {
       const index = state.findIndex(book => book.id === action.payload.id);
@@ -17,6 +19,7 @@ const bookSlice = createSlice({
       }
     },
     deleteBook: (state, action) => {
+      
       const bookId = action.payload;
       return state.filter(book => book.id !== bookId);
     }

@@ -9,10 +9,11 @@ import { Link, useParams } from 'react-router-dom';
 const BookList = () => {
   const dispatch = useDispatch();
   const books = useSelector(state => state.books);
+  console.log(books)
   const [editingBook, setEditingBook] = useState({ id: '', name: '', author: '' });
   const [selectedBook, setSelectedBook] = useState(null);
   const { libraryId } = useParams(); // Extract libraryId from URL
-console.log(books)
+
   useEffect(() => {
     axios.get(`http://localhost:8080/library/${libraryId}/books`) 
       .then(res => {
@@ -20,35 +21,45 @@ console.log(books)
         dispatch(setBooks(res.data));
       })
       .catch(error => console.log(error));
-  }, [dispatch, libraryId]);
+  }, []);
 
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/library/books/${id}`)
-      .then(res => {
-        console.log("hiiiiiii");
-        dispatch(deleteBook(id));
-      })
-      .catch(error => console.log(error));
+  const handleEditBook = (selectedBook) => {
+    setEditingBook(selectedBook);
   };
 
-  const handleUpdateClick = (book) => {
-    setSelectedBook(book);
-    setEditingBook(book);
+  const handleUpdateBook = (id) => {
+    const confirmUpdate = window.confirm('Are you sure you want to update this book?');
+    if (confirmUpdate) {
+      if (editingBook.name.trim() === '' || editingBook.author.trim() === '') {
+        alert('Please fill the data correctly');
+        return;
+      }
+      axios.put(`http://localhost:8080/library/books/${id}`, editingBook)
+        .then(res => {
+          const updatedBook = { ...editingBook };
+          dispatch(updateBook(updatedBook));
+          setEditingBook({ id: '', name: '', author: '' });
+          setSelectedBook(null);
+          alert('Book updated successfully');
+        })
+        .catch(error => console.log(error));
+    }
   };
 
-  const handleCancelUpdate = () => {
-    setSelectedBook(null);
-    setEditingBook({ id: '', name: '', author: '' });
+  const handleDeleteBook = (id) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this book?');
+    if (confirmDelete) {
+      axios.delete(`http://localhost:8080/library/books/${id}`)
+        .then(res => {
+          dispatch(deleteBook(id));
+          alert('Book deleted successfully');
+        })
+        .catch(error => console.log(error));
+    }
   };
 
   return (
     <div>
-                   <button>
-
-             
- 
-  <Link to="/add-book">Add Books</Link>
-  </button>
       <h2>Book List</h2>
       <table className='table'>
         <thead>
@@ -61,25 +72,32 @@ console.log(books)
         </thead>
         <tbody>
           {books && books.map(book => (
-            <tr key={book.id}>
-              <td>{book.id}</td>
-              <td>{book.name}</td>
-              <td>{book.author}</td>
-              <td>
-                <button onClick={() => handleUpdateClick(book)}>Update</button>
-                <button onClick={() => handleDelete(book.id)}>Delete</button>
-              </td>
-            </tr>
+            editingBook.id === book.id ? (
+              <tr key={book.id}>
+                <td>{book.id}</td>
+                <td><input type="text" value={editingBook.name} onChange={(event) => setEditingBook({ ...editingBook, name: event.target.value })} /></td>
+                <td><input type="text" value={editingBook.author} onChange={(event) => setEditingBook({ ...editingBook, author: event.target.value })} /></td>
+                <td>
+                  <button onClick={() => handleUpdateBook(book.id)} className="btn btn-success">Update</button>
+                  <button onClick={() => setEditingBook({ id: '', name: '', author: '' })} className="btn btn-warning">Back</button>
+                </td>
+              </tr>
+            ) : (
+              <tr key={book.id}>
+                <td>{book.id}</td>
+                <td>{book.name}</td>
+                <td>{book.author}</td>
+                <td>
+                  <button onClick={() => handleEditBook(book)}>Edit</button>
+                  <button onClick={() => handleDeleteBook(book.id)}>Delete</button>
+                </td>
+              </tr>
+            )
           ))}
         </tbody>
       </table>
 
-      {selectedBook && (
-        <BookUpdateForm
-          book={selectedBook}
-          onClose={handleCancelUpdate}
-        />
-      )}
+    
     </div>
   );
 };

@@ -11,16 +11,23 @@ const AddLibrary = () => {
 
   const handleAddLibrary = async () => {
     try {
-      console.log(name, ownerName)
+      console.log(name, ownerName);
       const response = await axios.post('http://localhost:8080/library', {
         name: name,
         ownerName: ownerName, 
       });
+  
       dispatch(addLibrary(response.data));
+  
+      window.alert(`Library "${name}" added successfully!`);
+  
+      setName('');
+      setOwnerName('');
     } catch (error) {
       console.error(error);
     }
   };
+  
   
   return (
     <div>
