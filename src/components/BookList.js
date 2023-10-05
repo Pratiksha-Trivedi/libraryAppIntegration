@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setBooks, deleteBook, updateBook } from '../slices/bookSlice';
 import '../styles/styles.css';
 import axios from 'axios';
-import BookUpdateForm from './BookUpdateForm';
+
 import { Link, useParams } from 'react-router-dom';
 
 const BookList = () => {
@@ -14,47 +14,54 @@ const BookList = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const { libraryId } = useParams(); // Extract libraryId from URL
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/library/${libraryId}/books`);
+      console.log("data comes here", response.data);
+      dispatch(setBooks(response.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    axios.get(`http://localhost:8080/library/${libraryId}/books`) 
-      .then(res => {
-        console.log("data comes here", res.data);
-        dispatch(setBooks(res.data));
-      })
-      .catch(error => console.log(error));
+    fetchData();
   }, []);
 
   const handleEditBook = (selectedBook) => {
     setEditingBook(selectedBook);
   };
 
-  const handleUpdateBook = (id) => {
+  const handleUpdateBook = async (id) => {
     const confirmUpdate = window.confirm('Are you sure you want to update this book?');
     if (confirmUpdate) {
       if (editingBook.name.trim() === '' || editingBook.author.trim() === '') {
         alert('Please fill the data correctly');
         return;
       }
-      axios.put(`http://localhost:8080/library/books/${id}`, editingBook)
-        .then(res => {
-          const updatedBook = { ...editingBook };
-          dispatch(updateBook(updatedBook));
-          setEditingBook({ id: '', name: '', author: '' });
-          setSelectedBook(null);
-          alert('Book updated successfully');
-        })
-        .catch(error => console.log(error));
+      try {
+        const response = await axios.put(`http://localhost:8080/library/books/${id}`, editingBook);
+        const updatedBook = { ...editingBook };
+        dispatch(updateBook(updatedBook));
+        setEditingBook({ id: '', name: '', author: '' });
+        setSelectedBook(null);
+        alert('Book updated successfully');
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
-  const handleDeleteBook = (id) => {
+  const handleDeleteBook = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this book?');
     if (confirmDelete) {
-      axios.delete(`http://localhost:8080/library/books/${id}`)
-        .then(res => {
-          dispatch(deleteBook(id));
-          alert('Book deleted successfully');
-        })
-        .catch(error => console.log(error));
+      try {
+        const response = await axios.delete(`http://localhost:8080/library/books/${id}`);
+        dispatch(deleteBook(id));
+        alert('Book deleted successfully');
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -96,8 +103,6 @@ const BookList = () => {
           ))}
         </tbody>
       </table>
-
-    
     </div>
   );
 };
